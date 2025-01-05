@@ -1,0 +1,90 @@
+﻿@using IOTWebAPI.Models
+@using IOTWebAPI.ViewModels
+@model MasaUserIdViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@if (TempData["msg"] != null)
+{
+    <div class="alert alert-warning alert-dismissible fade show my-5" role="alert">
+        <strong>Message: </strong> @TempData["msg"]
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Masa Listesi</h2>
+
+    <div class="row">
+        @foreach (var masa in Model.Masalar)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">@masa.MasaName</h5>
+
+                        <p class="card-text">
+                            <strong>Durum:</strong>
+                            @if (masa.MasaDurumu == IOTWebAPI.Models.MasaDurumu.Bos)
+                            {
+                                <span class="badge bg-success">Boş</span>
+                            }
+                            else if (masa.MasaDurumu == IOTWebAPI.Models.MasaDurumu.Dolu)
+                            {
+                                <span class="badge bg-danger">Dolu</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-warning">Rezerve</span>
+                            }
+                        </p>
+                        @if(Model.User.Masa == null)
+                        {
+                            @if (masa.MasaDurumu == IOTWebAPI.Models.MasaDurumu.Bos)
+                            {
+                                <form asp-action="RandevuAl" method="post">
+                                    <input type="hidden" name="MasaId" value="@masa.MasaId" />
+                                    <input type="hidden" name="UserId" value="@Model.User.UserId" />
+                                    <button type="submit" class="btn btn-primary w-100">Randevu Al</button>
+                                </form>
+                            }
+                        }
+                        else
+                        {
+                            if (masa.MasaDurumu == MasaDurumu.Dolu)
+                            {
+                                @if(Model.User.moladaMi)
+                                {
+                                    <form asp-action="MolaAl" method="post">
+                                        <input type="hidden" name="MasaId" value="@masa.MasaId" />
+                                        <input type="hidden" name="UserId" value="@Model.User.UserId" />
+                                        <button type="submit" class="btn btn-outline-primary w-100" disabled>Mola Al</button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <form asp-action="MolaAl" method="post">
+                                        <input type="hidden" name="MasaId" value="@masa.MasaId" />
+                                        <input type="hidden" name="UserId" value="@Model.User.UserId" />
+                                        <button type="submit" class="btn btn-outline-primary w-100">Mola Al</button>
+                                    </form>
+                                }
+                            }
+                            else
+                            {
+
+                            }
+                        }
+
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+<script>
+    setInterval(function () {
+        location.reload();
+    }, 5000);
+</script>
