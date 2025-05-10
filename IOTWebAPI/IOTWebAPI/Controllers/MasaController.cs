@@ -17,7 +17,7 @@ namespace IOTWebAPI.Controllers
             _context = context;
             _options = options;
             _serviceScopeFactory = serviceScopeFactory;
-            _timer = new Timer(CheckSensor, null, TimeSpan.Zero, TimeSpan.FromSeconds(5));
+            _timer = new Timer(CheckSensor!, null, TimeSpan.Zero, TimeSpan.FromSeconds(5));
         }
 
 
@@ -33,7 +33,7 @@ namespace IOTWebAPI.Controllers
             var viewmodel = new MasaUserIdViewModel
             {
                 Masalar = masalar,
-                User = user,
+                User = user!,
             };
             return View(viewmodel);
         }
@@ -91,7 +91,7 @@ namespace IOTWebAPI.Controllers
                         var masa = await context.Masalar
                         .Include(m => m.Sensor)
                         .FirstOrDefaultAsync(x => x.UserId == UserId);
-                        masa.MasaDurumu = MasaDurumu.Bos;
+                        masa!.MasaDurumu = MasaDurumu.Bos;
                         masa.UserId = null;
                         await context.SaveChangesAsync();
                         RedirectToAction("Index", new { UserId });
@@ -183,7 +183,7 @@ namespace IOTWebAPI.Controllers
                                 {
                                     item.MasaDurumu = MasaDurumu.Bos;
                                     item.UserId = null;
-                                    item.User.MasaId = null;
+                                    item.User!.MasaId = null;
                                 }
                             }
                             
